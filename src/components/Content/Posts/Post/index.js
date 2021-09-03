@@ -4,11 +4,9 @@ import MainOfThePostContent from "./MainOfThePostContent";
 
 const Post = () => {
   return (
-    <div className="posts">
-      <div className="postContainer">
-        <ImageOfThePost />
-        <MainOfThePostContent />
-      </div>
+    <div className="post">
+      <ImageOfThePost />
+      <MainOfThePostContent />
     </div>
   );
 }

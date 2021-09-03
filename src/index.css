@@ -91,6 +91,7 @@ body {
       position: relative;
       overflow: hidden;
       font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+      transition: 1s;
     }
     .button:after {
       content: "";
@@ -118,7 +119,6 @@ body {
     }
     .button:hover {
       background-color: #eee;
-      transition: 1s;
     }
       .refresh {
         color: #3971c1;

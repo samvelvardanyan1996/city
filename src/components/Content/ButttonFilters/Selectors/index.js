@@ -5,11 +5,11 @@ import SelectorTime from "./SelectorTime";
 
 const Selectors = () => {
   return (
-    <Fragment>
+    <div className="displayNone selectors">
       <SelectorTime />
       <SelectorRated />
       <SelectorAllLanguages />
-    </Fragment>
+    </div>
   );
 }
 
