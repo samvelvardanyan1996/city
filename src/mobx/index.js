@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 
-class Timer {
+className Timer {
   id_category      = 2;
   array_categories = [];
   array_cats       = [];

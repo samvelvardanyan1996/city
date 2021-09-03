@@ -1,10 +1,9 @@
 import React from "react";
-import Text from "./Text";
 
 const Title = () => {
   return (
     <div className="title">
-      <Text />
+      <h1 className="h1">Watchlist Name</h1>
     </div>
   );
 }
