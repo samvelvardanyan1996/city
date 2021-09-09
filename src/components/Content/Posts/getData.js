@@ -4,7 +4,7 @@ import Reaction from "./Reaction";
 
 export const getData = (data, uuidForShow, setUuidForShow) => {
   let returnData = data.map((post, index) => {
-    let key                    = post.uuid;
+    let key                    = index;
     let author_image_url       = post.author_image_url;
     let title                  = post.title;
     let description            = post.description;

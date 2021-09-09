@@ -3,7 +3,7 @@ import React from "react";
 const ActionButtons = ({active, updateData, changeActions, showFilters, show}) => {
   return (
     <div className="action_buttons">
-      <button className={active === "Refresh" ? "active button" :  "button"} onClick={() => { changeActions("Refresh"); showFilters(false); updateData(); }}>
+      <button className={active === "Refresh" ? "active button" :  "button"} onClick={() => window.location.reload()}>
         <svg
           className="refresh"
           xmlns="http://www.w3.org/2000/svg"

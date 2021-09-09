@@ -16,8 +16,8 @@ const Content = () => {
   ]);
   const [refreshTime, setRefreshTime] = useState([
     {
-      "1min": true,
-      "2min": false,
+      "1min": false,
+      "2min": true,
       "3min": false
     }
   ]);
@@ -25,17 +25,71 @@ const Content = () => {
     {
       "Top Rated": true,
       "Latest": false,
-      "Most Rated": false,
-      "Popular": false
+      "Retweeted": false,
+      "Read": false
     }
   ]);
   const [active, setActive] = useState("");
   const [show, setShow]     = useState(false);
   const [data, setData] = useState([]);
   const [uuidForShow, setUuidForShow] = useState([]);
+  const [pageToken, setPageToken] = useState("");
 
   const updateData = () => {
-    console.log("test");
+    if(pageToken === ""){
+      console.log("test");
+      let stringOrderValue;
+      if(orderValue[orderValue.length - 1]["Top Rated"] === true){
+        stringOrderValue = "top";
+      }
+      else if(orderValue[orderValue.length - 1]["Latest"] === true){
+        stringOrderValue = "latest";
+      }
+      else if(orderValue[orderValue.length - 1]["Retweeted"] === true){
+        stringOrderValue = "retweeted";
+      }
+      else if(orderValue[orderValue.length - 1]["Read"] === true){
+        stringOrderValue = "read";
+      }
+      else{}
+
+      let stringLanguage = [];
+      if(language[language.length - 1]["English"] === true){
+        stringLanguage.push("en");
+      }
+      if(language[language.length - 1]["German"] === true){
+        stringLanguage.push("de");
+      }
+      if(language[language.length - 1]["Chinese"] === true){
+        stringLanguage.push("zh");
+      }
+      if(language[language.length - 1]["Italian"] === true){
+        stringLanguage.push("it");
+      }
+      else{}
+
+      const apiUrl = "https://cf-endpoint-proxy.herokuapp.com/webapi/v1/stories?limit=20&languages=" + stringLanguage + "&order_by=" + stringOrderValue + "&page_token%20=d2093c93-7dcd-432e-a5d7-7e9e17acd48e";
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(updateData => { setData(updateData.stories); setPageToken(updateData.next_page_token); arrUuidForShowFunc(updateData.stories)});
+      const arrUuidForShowFunc = (updateData) => {
+        let arrUuidForShow = updateData.map((item) => {
+          return (
+            {
+              uuid: item.uuid,
+              show: false,
+            }
+          );
+        })
+        setUuidForShow(arrUuidForShow);
+      }
+    }
+    else{
+      setPageToken("");
+    }
+  }
+
+  const loadData = () => {
     let stringOrderValue;
     if(orderValue[orderValue.length - 1]["Top Rated"] === true){
       stringOrderValue = "top";
@@ -43,11 +97,11 @@ const Content = () => {
     else if(orderValue[orderValue.length - 1]["Latest"] === true){
       stringOrderValue = "latest";
     }
-    else if(orderValue[orderValue.length - 1]["Most Rated"] === true){
-      stringOrderValue = "most";
+    else if(orderValue[orderValue.length - 1]["Retweeted"] === true){
+      stringOrderValue = "retweeted";
     }
-    else if(orderValue[orderValue.length - 1]["Popular"] === true){
-      stringOrderValue = "popular";
+    else if(orderValue[orderValue.length - 1]["Read"] === true){
+      stringOrderValue = "read";
     }
     else{}
 
@@ -56,22 +110,22 @@ const Content = () => {
       stringLanguage.push("en");
     }
     if(language[language.length - 1]["German"] === true){
-      stringLanguage.push("gr");
+      stringLanguage.push("de");
     }
     if(language[language.length - 1]["Chinese"] === true){
-      stringLanguage.push("ch");
+      stringLanguage.push("zh");
     }
     if(language[language.length - 1]["Italian"] === true){
       stringLanguage.push("it");
     }
     else{}
 
-    const apiUrl = "https://cf-endpoint-proxy.herokuapp.com/webapi/v1/stories?limit=20&languages=" + stringLanguage + "&order=" + stringOrderValue + "&page_token%20=d2093c93-7dcd-432e-a5d7-7e9e17acd48e";
+    const apiUrl = "https://cf-endpoint-proxy.herokuapp.com/webapi/v1/stories?limit=20&languages=" + stringLanguage + "&order_by=" + stringOrderValue + "&page_token%20=" + pageToken;
     fetch(apiUrl)
       .then(response => response.json())
-      .then(data => setData(data.stories));
-    if(data.length !== 0) {
-      let arrUuidForShow = data.map((item) => {
+      .then(loadData => { setData(data.concat(loadData.stories)); setPageToken(loadData.next_page_token)});
+    if(uuidForShow.length !== 0) {
+      let arrUuidForShow = uuidForShow.map((item) => {
         return (
           {
             uuid: item.uuid,
@@ -79,7 +133,7 @@ const Content = () => {
           }
         );
       })
-      setUuidForShow(arrUuidForShow);
+      setUuidForShow(uuidForShow.concat(arrUuidForShow));
     }
   }
 
@@ -99,9 +153,7 @@ const Content = () => {
     const timer = setInterval(updateData, numberRefreshTime * 1000);
 
     return () => clearInterval(timer);
-  }, [orderValue, refreshTime, language, data.length]);
-
-  console.log("language", language);
+  }, [orderValue, refreshTime, language]);
 
   const changeActions = (value) => {
     setActive(value);
@@ -184,8 +236,8 @@ const Content = () => {
         {
           "Top Rated": true,
           "Latest": false,
-          "Most Rated": false,
-          "Popular": false
+          "Retweeted": false,
+          "Read": false
         }
       ])
     }
@@ -195,30 +247,30 @@ const Content = () => {
         {
           "Top Rated": false,
           "Latest": true,
-          "Most Rated": false,
-          "Popular": false
+          "Retweeted": false,
+          "Read": false
         }
       ])
     }
-    else if(orderValue[orderValue.length - 1]["Most Rated"] === false && ((e.target.nextElementSibling !== null && e.target.nextElementSibling.innerHTML === "Most Rated") || e.target.innerHTML === "Most Rated")){
+    else if(orderValue[orderValue.length - 1]["Retweeted"] === false && ((e.target.nextElementSibling !== null && e.target.nextElementSibling.innerHTML === "Retweeted") || e.target.innerHTML === "Retweeted")){
       setOrderValue([
         ...orderValue,
         {
           "Top Rated": false,
           "Latest": false,
-          "Most Rated": true,
-          "Popular": false
+          "Retweeted": true,
+          "Read": false
         }
       ])
     }
-    else if(orderValue[orderValue.length - 1]["Popular"] === false && ((e.target.nextElementSibling !== null && e.target.nextElementSibling.innerHTML === "Popular") || e.target.innerHTML === "Popular")){
+    else if(orderValue[orderValue.length - 1]["Read"] === false && ((e.target.nextElementSibling !== null && e.target.nextElementSibling.innerHTML === "Read") || e.target.innerHTML === "Read")){
       setOrderValue([
         ...orderValue,
         {
           "Top Rated": false,
           "Latest": false,
-          "Most Rated": false,
-          "Popular": true
+          "Retweeted": false,
+          "Read": true
         }
       ])
     }
@@ -283,6 +335,11 @@ const Content = () => {
         uuidForShow={uuidForShow}
         setUuidForShow={setUuidForShow}
       />
+      <div className="action_buttons">
+        <button className={"button"} onClick={() => loadData()}>
+          <span className="action_button_text">Load posts</span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -4,15 +4,15 @@ const PostDropDownContainer = ({index, uuidForShow, setUuidForShow}) => {
   const changeState = () => {
     let changeState = [...uuidForShow, ...uuidForShow.slice(-20)];
     let changeStateLength = changeState.length;
-    if(changeState[changeStateLength - 20 + index] !== undefined){
-      changeState[changeStateLength - 20 + index]["show"] = !(changeState[changeStateLength - 20 + index]["show"]);
+    if(changeState[index] !== undefined){
+      changeState[index]["show"] = !(changeState[index]["show"]);
     }
     return changeState;
   }
 
   let postDropDownContainer = "hideDescription postDropDownContainer";
   if(uuidForShow.length !== 0){
-    if(uuidForShow[uuidForShow.length - 20 + index]["show"] !== true){
+    if(uuidForShow[index]["show"] !== true){
       postDropDownContainer = "showDescription postDropDownContainer";
     }
   }

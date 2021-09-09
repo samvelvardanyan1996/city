@@ -2,7 +2,10 @@ import React from "react";
 
 const PostTitle = ({ index, uuidForShow, title, description }) => {
   let postTitle = "postTitle";
-  if(index !== undefined && uuidForShow.length !== 0 && uuidForShow[uuidForShow.length -20 + index].show === false){
+  // console.log("uuidForShow", uuidForShow);
+  // console.log("index", index);
+  // console.log("uuidForShow[index]", uuidForShow[index]);
+  if(index !== undefined && uuidForShow.length !== 0 && uuidForShow[index].show === false){
     postTitle = "displayNone postTitle";
   }
 

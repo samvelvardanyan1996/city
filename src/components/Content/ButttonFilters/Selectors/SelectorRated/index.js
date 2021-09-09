@@ -1,7 +1,7 @@
 import React from "react";
 
 const SelectorRated = ({ orderValue, changeOrderValue, active}) => {
-  const orderValueArrays = ["Top Rated", "Latest", "Most Rated", "Popular"];
+  const orderValueArrays = ["Top Rated", "Latest", "Retweeted", "Read"];
 
   return (
     <div className={active !== "Top Rated" ? "selector_rated visibilityHidden" : "selector_rated"}>
