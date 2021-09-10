@@ -31,61 +31,74 @@ const Content = () => {
   ]);
   const [active, setActive] = useState("");
   const [show, setShow]     = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData]     = useState([]);
   const [uuidForShow, setUuidForShow] = useState([]);
   const [pageToken, setPageToken] = useState("");
 
-  const updateData = () => {
-    if(pageToken === ""){
-      console.log("test");
-      let stringOrderValue;
-      if(orderValue[orderValue.length - 1]["Top Rated"] === true){
-        stringOrderValue = "top";
-      }
-      else if(orderValue[orderValue.length - 1]["Latest"] === true){
-        stringOrderValue = "latest";
-      }
-      else if(orderValue[orderValue.length - 1]["Retweeted"] === true){
-        stringOrderValue = "retweeted";
-      }
-      else if(orderValue[orderValue.length - 1]["Read"] === true){
-        stringOrderValue = "read";
-      }
-      else{}
-
-      let stringLanguage = [];
-      if(language[language.length - 1]["English"] === true){
-        stringLanguage.push("en");
-      }
-      if(language[language.length - 1]["German"] === true){
-        stringLanguage.push("de");
-      }
-      if(language[language.length - 1]["Chinese"] === true){
-        stringLanguage.push("zh");
-      }
-      if(language[language.length - 1]["Italian"] === true){
-        stringLanguage.push("it");
-      }
-      else{}
-
-      const apiUrl = "https://cf-endpoint-proxy.herokuapp.com/webapi/v1/stories?limit=20&languages=" + stringLanguage + "&order_by=" + stringOrderValue + "&page_token%20=d2093c93-7dcd-432e-a5d7-7e9e17acd48e";
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(updateData => { setData(updateData.stories); setPageToken(updateData.next_page_token); arrUuidForShowFunc(updateData.stories)});
-      const arrUuidForShowFunc = (updateData) => {
-        let arrUuidForShow = updateData.map((item) => {
-          return (
-            {
-              uuid: item.uuid,
-              show: false,
-            }
-          );
-        })
-        setUuidForShow(arrUuidForShow);
-      }
+  useEffect(() => {
+    // updateData();
+    let numberRefreshTime;
+    if(refreshTime[refreshTime.length - 1]["1min"] === true){
+      numberRefreshTime = 60;
     }
-    else{
-      setPageToken("");
+    else if(refreshTime[refreshTime.length - 1]["2min"] === true){
+      numberRefreshTime = 120;
+    }
+    else if(refreshTime[refreshTime.length - 1]["3min"] === true){
+      numberRefreshTime = 180;
+    }
+    else{}
+    const timer = setInterval(updateData(), numberRefreshTime * 1000);
+
+    return () => clearInterval(timer);
+  }, [orderValue, refreshTime, language]);
+
+  const updateData = () => {
+    console.log("test");
+    let stringOrderValue;
+    if(orderValue[orderValue.length - 1]["Top Rated"] === true){
+      stringOrderValue = "top";
+    }
+    else if(orderValue[orderValue.length - 1]["Latest"] === true){
+      stringOrderValue = "latest";
+    }
+    else if(orderValue[orderValue.length - 1]["Retweeted"] === true){
+      stringOrderValue = "retweeted";
+    }
+    else if(orderValue[orderValue.length - 1]["Read"] === true){
+      stringOrderValue = "read";
+    }
+    else{}
+
+    let stringLanguage = [];
+    if(language[language.length - 1]["English"] === true){
+      stringLanguage.push("en");
+    }
+    if(language[language.length - 1]["German"] === true){
+      stringLanguage.push("de");
+    }
+    if(language[language.length - 1]["Chinese"] === true){
+      stringLanguage.push("zh");
+    }
+    if(language[language.length - 1]["Italian"] === true){
+      stringLanguage.push("it");
+    }
+    else{}
+
+    const apiUrl = "https://cf-endpoint-proxy.herokuapp.com/webapi/v1/stories?limit=20&languages=" + stringLanguage + "&order_by=" + stringOrderValue + "&page_token%20=d2093c93-7dcd-432e-a5d7-7e9e17acd48e";
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(updateData => { setData(updateData.stories); setPageToken(updateData.next_page_token); arrUuidForShowFunc(updateData.stories)});
+    const arrUuidForShowFunc = (updateData) => {
+      let arrUuidForShow = updateData.map((item) => {
+        return (
+          {
+            uuid: item.uuid,
+            show: false,
+          }
+        );
+      })
+      setUuidForShow(arrUuidForShow);
     }
   }
 
@@ -136,24 +149,6 @@ const Content = () => {
       setUuidForShow(uuidForShow.concat(arrUuidForShow));
     }
   }
-
-  useEffect(() => {
-    updateData();
-    let numberRefreshTime;
-    if(refreshTime[refreshTime.length - 1]["1min"] === true){
-      numberRefreshTime = 60;
-    }
-    else if(refreshTime[refreshTime.length - 1]["2min"] === true){
-      numberRefreshTime = 120;
-    }
-    else if(refreshTime[refreshTime.length - 1]["3min"] === true){
-      numberRefreshTime = 180;
-    }
-    else{}
-    const timer = setInterval(updateData, numberRefreshTime * 1000);
-
-    return () => clearInterval(timer);
-  }, [orderValue, refreshTime, language]);
 
   const changeActions = (value) => {
     setActive(value);
@@ -310,6 +305,8 @@ const Content = () => {
     }
     else{}
   }
+
+  console.log("orderValue", orderValue)
 
   return (
     <div className="content">
